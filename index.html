@@ -1,0 +1,135 @@
+```<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trigger Random</title>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Added link to the jQuery Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Added a link to Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" > 
+   </script>
+
+<style>
+.box1 {
+    background-color: rgb(235, 159, 74) ;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    }
+#button1, #line1, #line2 {
+    margin: auto;
+    
+}
+#button1 {
+    background-color: rgb(255, 242, 53);
+    font-weight: bold;
+}
+#firstLine {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-style: italic;
+    font-weight: bolder;
+    font-size: 300%;
+}
+
+</style>
+
+</head>
+<body>
+        <div class="box1">
+                <p id="firstLine">Guess which planet is your dream planet!!</p>
+    </div>
+    <div class="box1">
+            <button id="button1">Click to start</button>
+            <p id="ruleOfGame"></p>
+            <p id = "line1"></p><br><br>
+            <p id = "lineFalse"></p>
+            <p id = "line2"></p>
+            <p id = "line3"></p>
+    </div>
+
+
+     
+
+<script>
+
+let planets = ["mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"];
+    let picked = _.sample(planets);
+    let array = picked.split("");
+    console.log(array);
+    let finalLine = [];
+    let countFalse = 0;
+    let falseLetters = [];
+    let numberOfChances = array.length + 1;
+
+    document.getElementById("button1").addEventListener("click", myFunction);
+    document.getElementById("button1").addEventListener("click", myFunction2);
+    document.getElementById("button1").addEventListener("click", myFunction3);
+
+
+
+    
+
+
+    function myFunction(event){
+        for(let i=0; i<array.length; i++){
+            finalLine.push(" - ");
+                       }
+            document.getElementById("line1").innerHTML = finalLine;
+        }   
+   
+    function myFunction2(){
+    document.getElementById("ruleOfGame").innerHTML = "You have" + "</br>" + numberOfChances + "</br>" + " chances to guess what is the name of the planet!"
+    }
+
+    function myFunction3(){    
+        document.addEventListener("keydown", dad => {
+            
+                for(let i=0; i<array.length; i++){
+                    if (event.key == array[i]) {
+                        var result = true;
+                        finalLine[i] = " " + array[i] + " ";
+                        document.getElementById("line1").innerHTML = finalLine;
+                    }
+                             
+                }
+                   
+                
+                if(result !== true){
+                        document.getElementById("lineFalse").innerHTML = "Number of False letters: ";
+                        counter1(); 
+                        falseLetters.push(event.key);
+                        document.getElementById("line3").innerHTML = falseLetters;
+                        } 
+                        
+            }); 
+            
+    } 
+
+    function counter1(){
+        countFalse++;
+        document.getElementById("line2").innerHTML = countFalse;
+    }
+
+    function counter2(){
+        countTrue++;
+        document.getElementById("line2").innerHTML = countTrue + countFalse;
+    }
+
+    
+
+    
+        
+      
+
+
+</script>
+   
+
+
+  
+</body>
+</html>
