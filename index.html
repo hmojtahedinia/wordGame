@@ -1,32 +1,39 @@
-```<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Trigger Random</title>
   
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <!-- Added link to the jQuery Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-  <!-- Added a link to Bootstrap-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>  
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <script src = "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js" > 
    </script>
 
 <style>
 .box1 {
-    background-color: rgb(235, 159, 74) ;
+    background-color: rgba(81, 43, 233, 0.397) ;
     width: 50%;
     margin: auto;
     text-align: center;
+    text-shadow: 2px 2px blue;
+    color: white;
+    
+
     }
 #button1, #line1, #line2 {
     margin: auto;
     
 }
 #button1 {
-    background-color: rgb(255, 242, 53);
+    background-color: rgb(95, 78, 243);
     font-weight: bold;
+    color: white;
 }
 #firstLine {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -38,7 +45,7 @@
 </style>
 
 </head>
-<body>
+<body background="universe" id="universe">
         <div class="box1">
                 <p id="firstLine">Guess which planet is your dream planet!!</p>
     </div>
@@ -54,80 +61,149 @@
 
      
 
-<script>
-
-let planets = ["mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"];
-    let picked = _.sample(planets);
-    let array = picked.split("");
-    console.log(array);
-    let finalLine = [];
-    let countFalse = 0;
-    let falseLetters = [];
-    let numberOfChances = array.length + 1;
-
-    document.getElementById("button1").addEventListener("click", myFunction);
-    document.getElementById("button1").addEventListener("click", myFunction2);
-    document.getElementById("button1").addEventListener("click", myFunction3);
-
-
-
-    
-
-
-    function myFunction(event){
-        for(let i=0; i<array.length; i++){
-            finalLine.push(" - ");
-                       }
-            document.getElementById("line1").innerHTML = finalLine;
-        }   
-   
-    function myFunction2(){
-    document.getElementById("ruleOfGame").innerHTML = "You have" + "</br>" + numberOfChances + "</br>" + " chances to guess what is the name of the planet!"
-    }
-
-    function myFunction3(){    
-        document.addEventListener("keydown", dad => {
+    <script>
+            // GLOBAL VARIABLES
+            // creating an array to hold all of the planets
+            var planets = ["mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "pluto"];
+            // selected word from the array
+            var pickedWord
+            // container for picked word
+            var pickedWordArray 
+            var finalLine = [];
+            var countFalse = 0 ;
+            var countTrue = 0 ;
+            // collecting the false letters
+            var falseLetters = [];
+            // collecting the true letters
+            var correctLetterArray = []
+            // recording the amount of chances
+            var numberOfChances 
+            var result
+            var letter 
+            var isGameRunning = false
             
-                for(let i=0; i<array.length; i++){
-                    if (event.key == array[i]) {
-                        var result = true;
-                        finalLine[i] = " " + array[i] + " ";
-                        document.getElementById("line1").innerHTML = finalLine;
-                    }
-                             
+            // HTML ELEMENTS
+            // setting the start button DOM element to a variable
+            var startButton = document.querySelector("#button1")
+            var line1 = document.getElementById("line1") // holds the content of each correct letter
+            var line2 = document.getElementById("line2")
+            var line3 = document.getElementById("line3")
+            var lineFalse = document.getElementById("lineFalse")
+            var ruleOfGame = document.getElementById("ruleOfGame")
+            
+
+            
+            
+
+            // FUNCTIONS"
+            function gameStart() {
+                isGameRunning = true
+                // resetting the displayed array
+                finalLine = []
+                // displaying the placeholders
+                for (let i = 0; i < pickedWordArray.length; i++) {
+                    finalLine.push(" - ");
                 }
-                   
-                
-                if(result !== true){
-                        document.getElementById("lineFalse").innerHTML = "Number of False letters: ";
-                        counter1(); 
-                        falseLetters.push(event.key);
-                        document.getElementById("line3").innerHTML = falseLetters;
-                        } 
-                        
-            }); 
+                line1.innerHTML = finalLine;
+                // displayng the sentence to the screen 
+                ruleOfGame.innerHTML = "You have" + "</br>" + numberOfChances + "</br>" + " chances to guess what is the name of the planet!"
+                lineFalse.innerHTML = "Number of False letters: ";
+                // resetting the false letter array
+                line3.innerHTML = falseLetters;
+            }
+            // starting game and setting the variables
+            function gameInit(){
+                // using underscore to find a single element from the array
+                pickedWord = _.sample(planets);
+                // convert selected word into an array
+                pickedWordArray = pickedWord.split("");
+                // number of chances available to guess word
+                numberOfChances = pickedWordArray.length;
+                // counting the incorrect entries
+                countFalse = 0
+                countTrue = 0
+                falseLetters = []
+                correctLetterArray = []
+                gameStart()
+            }
+            // function for incorrect entries
+            function wrongLetterCounter(){
+                countFalse++;
+                line2.innerHTML = countFalse;
+            }
+            // function for correct entries
+            function correctLetterCounter() {
+                countTrue++;
+            }
+            // functionality for calculating if a user has won
+            function haveYouWon(){
+                if (numberOfChances - countFalse == 0){
+                    var response = window.confirm('Unfortunately you\'ve run out lives! The correct planet is: ' + pickedWord + '. Would you like to play again?')
+                    if (response === true) {
+                        gameInit()
+                    } else {
+                        window.alert('Thanks for playing!')
+                    }
+                } else if (finalLine.join('') == pickedWord){
+                    var response = window.confirm('Congratulations you have won! Would you like to play again?')
+                    if (response === true){
+                        gameInit()
+                    }else{
+                        window.alert('Thanks for playing!')
+                    }
+                }
+            }
+            // the game logic
+            function gameLogic(event){
+                if(isGameRunning === false){
+                    window.alert('Game is not running! Please click the start game button to play')
+                }else{
+                    // validating whether it is a number or not
+                    if (event.keyCode < 91 && event.keyCode > 47) {
+                        letter = event.key
+                        // if the letter entered matches with variable in the array 
+                        if (pickedWordArray.includes(letter)){
+                            if(correctLetterArray.includes(letter)){
+                                window.alert('You\'ve already entered this letter. Please try again')
+                            }else{
+                                for (let i = 0; i < pickedWordArray.length; i++) {
+                                    if (letter === pickedWordArray[i]) {
+                                        console.log('correct')
+                                        finalLine[i] = letter
+                                        line1.innerHTML = finalLine;
+                                    }
+                                }
+                                correctLetterCounter()
+                                correctLetterArray.push(letter)
+                            }
+                        }else{
+                            if(falseLetters.includes(letter)){
+                                window.alert('You\'ve already entered this letter. Please try again')
+                            }else{
+                                wrongLetterCounter()
+                                falseLetters.push(letter)
+                                line3.innerHTML = falseLetters;
+                            }
+                        }
+                    } else {
+                        window.alert('Please enter a letter or number')
+                    }
+                    haveYouWon()   
+                }
+                console.clear()
+                console.log(falseLetters)
+                console.log(correctLetterArray)
+                console.log(finalLine)
+                console.log('total number of incorrect guess', countFalse)
+                console.log('total number of correct guess', countTrue)
+                console.log('total number of chances', numberOfChances)
+            }
             
-    } 
-
-    function counter1(){
-        countFalse++;
-        document.getElementById("line2").innerHTML = countFalse;
-    }
-
-    function counter2(){
-        countTrue++;
-        document.getElementById("line2").innerHTML = countTrue + countFalse;
-    }
-
-    
-
-    
+            document.addEventListener("keydown", gameLogic);
+            startButton.addEventListener('click', gameInit);
         
-      
-
-
-</script>
-   
+          </script>
+        
 
 
   
